@@ -1,0 +1,6 @@
+warehouse_id,warehouse_name,location,capacity_units,current_occupancy,manager_name
+1,Depósito 1,Buenos Aires,24505,87,Laura Torres
+2,Depósito 2,Córdoba,23278,50,Sofía Ramírez
+3,Depósito 3,Rosario,77607,62,Sofía Ramírez
+4,Depósito 4,Mendoza,43167,70,Laura Torres
+5,Depósito 5,La Plata,65023,82,Laura Torres
