@@ -68,6 +68,8 @@ Antes de la implementación, el equipo de negocio dedicaba **2 horas diarias** a
 | **NumPy** | Operaciones numéricas optimizadas |
 | **Parquet** | Almacenamiento columnar eficiente |
 | **Jupyter Notebooks** | Exploración y desarrollo |
+| **AWS S3** | Almacenamiento en la nube |
+| **Boto3** | SDK de AWS para Python |
 
 ---
 
@@ -118,6 +120,32 @@ df_categories.drop(columns=['parent_category_id'], inplace=True)
 - 🎯 Preservación de tipos de datos
 - 📊 Compatible con herramientas Big Data (Spark, Hive)
 
+### 4️⃣ Integración con AWS S3
+
+**Decisión:** Implementar carga de datos a AWS S3 para almacenamiento en la nube.
+
+**Implementación:**
+- Módulo `s3.py` con funciones reutilizables para lectura y escritura
+- Configuración segura mediante variables de entorno (`.env`)
+- Soporte para subir DataFrames directamente en formato Parquet
+
+**Beneficios:**
+- ☁️ Almacenamiento escalable y duradero
+- 🔐 Credenciales seguras fuera del código
+- 🔄 Facilita integración con otros servicios AWS (Athena, Glue, Redshift)
+- 📦 Preparado para pipelines de producción
+
+```python
+# Ejemplo de uso
+from s3 import upload_file_to_s3, get_file_from_s3
+
+# Subir DataFrame a S3
+upload_file_to_s3(bucket_name, 'output/cleaned_data.parquet', df)
+
+# Leer archivo desde S3
+data = get_file_from_s3(bucket_name, 'data/raw_data.csv')
+```
+
 ---
 
 ## 📊 Insights de Negocio Descubiertos
@@ -138,7 +166,7 @@ Al ejecutar el pipeline, se generaron los siguientes análisis:
 
 ```bash
 Python 3.8+
-pip install pandas numpy pyarrow
+pip install pandas numpy pyarrow boto3 python-dotenv
 ```
 
 ### Instalación
@@ -151,6 +179,21 @@ cd etl
 # Instalar dependencias
 pip install -r requirements.txt
 ```
+
+### Configuración de AWS S3
+
+1. Crear un usuario IAM en AWS con permisos de S3
+2. Generar Access Keys para el usuario
+3. Crear un archivo `.env` en la raíz del proyecto:
+
+```env
+AWS_ACCESS_KEY_ID=tu_access_key
+AWS_SECRET_ACCESS_KEY=tu_secret_key
+REGION=us-east-1
+BUCKET_NAME=tu-bucket-name
+```
+
+> ⚠️ **Importante:** Nunca subas el archivo `.env` a Git. Asegúrate de que esté en `.gitignore`.
 
 ### Ejecución
 
@@ -184,6 +227,9 @@ etl/
 │   └── cleaned_*.parquet
 │
 ├── etl.ipynb             # Notebook principal del pipeline
+├── config.py             # Configuración y variables de entorno
+├── s3.py                 # Funciones de integración con AWS S3
+├── .env                  # Variables de entorno (no incluido en Git)
 ├── README.md             # Este archivo
 └── requirements.txt      # Dependencias
 ```
@@ -198,7 +244,7 @@ etl/
 2. **Procesamiento incremental** (delta loads vs full refresh)
 3. **Particionamiento** por fecha/categoría en Parquet
 4. **Orquestación** con Airflow o Prefect
-5. **Cloud storage** (S3, Azure Blob)
+5. ~~**Cloud storage** (S3, Azure Blob)~~ ✅ **Implementado con AWS S3**
 
 ### Monitoreo y Calidad:
 
